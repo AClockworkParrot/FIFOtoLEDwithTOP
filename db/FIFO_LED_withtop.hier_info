@@ -1,0 +1,87 @@
+|top
+CLK => ft240xq:C0.CLK
+CLK => LED_indicator:C1.CLK
+RXF => ft240xq:C0.RXF
+TXE => ft240xq:C0.TXE
+DATA[0] <> LED_indicator:C1.DATA[0]
+DATA[1] <> LED_indicator:C1.DATA[1]
+DATA[2] <> LED_indicator:C1.DATA[2]
+DATA[3] <> LED_indicator:C1.DATA[3]
+DATA[4] <> LED_indicator:C1.DATA[4]
+DATA[5] <> LED_indicator:C1.DATA[5]
+DATA[6] <> LED_indicator:C1.DATA[6]
+DATA[7] <> LED_indicator:C1.DATA[7]
+RD <= ft240xq:C0.RD
+WR <= ft240xq:C0.WR
+LED <= LED_indicator:C1.LED
+RX_valid <= ft240xq:C0.RX_valid
+
+
+|top|ft240xq:C0
+CLK => RX_valid~reg0.CLK
+CLK => RD~reg0.CLK
+CLK => counter[0].CLK
+CLK => counter[1].CLK
+CLK => reading.CLK
+RXF => process_0.IN1
+TXE => ~NO_FANOUT~
+RD <= RD~reg0.DB_MAX_OUTPUT_PORT_TYPE
+WR <= comb.DB_MAX_OUTPUT_PORT_TYPE
+RX_valid <= RX_valid~reg0.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|top|LED_indicator:C1
+CLK => DATA[0]~reg0.CLK
+CLK => DATA[0]~en.CLK
+CLK => DATA[1]~reg0.CLK
+CLK => DATA[1]~en.CLK
+CLK => DATA[2]~reg0.CLK
+CLK => DATA[2]~en.CLK
+CLK => DATA[3]~reg0.CLK
+CLK => DATA[3]~en.CLK
+CLK => DATA[4]~reg0.CLK
+CLK => DATA[4]~en.CLK
+CLK => DATA[5]~reg0.CLK
+CLK => DATA[5]~en.CLK
+CLK => DATA[6]~reg0.CLK
+CLK => DATA[6]~en.CLK
+CLK => DATA[7]~reg0.CLK
+CLK => DATA[7]~en.CLK
+CLK => led_state.CLK
+CLK => data_rx[0].CLK
+CLK => data_rx[1].CLK
+CLK => data_rx[2].CLK
+CLK => data_rx[3].CLK
+CLK => data_rx[4].CLK
+CLK => data_rx[5].CLK
+CLK => data_rx[6].CLK
+CLK => data_rx[7].CLK
+LED <= led_state.DB_MAX_OUTPUT_PORT_TYPE
+DATA[0] <> DATA[0]
+DATA[0] <> DATA[0]
+DATA[1] <> DATA[1]
+DATA[1] <> DATA[1]
+DATA[2] <> DATA[2]
+DATA[2] <> DATA[2]
+DATA[3] <> DATA[3]
+DATA[3] <> DATA[3]
+DATA[4] <> DATA[4]
+DATA[4] <> DATA[4]
+DATA[5] <> DATA[5]
+DATA[5] <> DATA[5]
+DATA[6] <> DATA[6]
+DATA[6] <> DATA[6]
+DATA[7] <> DATA[7]
+DATA[7] <> DATA[7]
+RX_val => DATA[0].IN1
+RX_val => led_state.ENA
+RX_val => data_rx[0].ENA
+RX_val => data_rx[1].ENA
+RX_val => data_rx[2].ENA
+RX_val => data_rx[3].ENA
+RX_val => data_rx[4].ENA
+RX_val => data_rx[5].ENA
+RX_val => data_rx[6].ENA
+RX_val => data_rx[7].ENA
+
+

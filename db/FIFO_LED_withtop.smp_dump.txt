@@ -1,0 +1,10 @@
+
+State Machine - |top|ft240xq:C0|state
+Name state.WRITE_DONE state.WRITE_HOLD state.WRITE_SETUP state.READ_DONE state.READ_HOLD state.READ_SETUP state.IDLE 
+state.IDLE 0 0 0 0 0 0 0 
+state.READ_SETUP 0 0 0 0 0 1 1 
+state.READ_HOLD 0 0 0 0 1 0 1 
+state.READ_DONE 0 0 0 1 0 0 1 
+state.WRITE_SETUP 0 0 1 0 0 0 1 
+state.WRITE_HOLD 0 1 0 0 0 0 1 
+state.WRITE_DONE 1 0 0 0 0 0 1 

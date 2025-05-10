@@ -1,0 +1,103 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all; 
+
+entity tb is
+end tb;
+
+architecture sim of tb is
+    -- Сигналы для подключения к DUT (Design Under Test)
+    signal CLK_tb  : std_logic := '0';
+    signal RXF_tb  : std_logic := '1'; -- нет данных
+    signal TXE_tb  : std_logic := '0'; -- можно писать
+    signal DATA_tb : std_logic_vector(7 downto 0); -- буфер
+    signal RD_tb   : std_logic;
+    signal WR_tb   : std_logic;
+    signal LED_tb  : std_logic;
+
+    -- Для чтения и записи данных
+    signal DATA_in : std_logic_vector(7 downto 0) := (others => 'Z');  -- для чтения
+    signal DATA_out : std_logic_vector(7 downto 0) := (others => 'Z'); -- для записи
+
+begin
+    -- Инстанцирование топа
+    dut : entity work.top
+        port map (
+            CLK  => CLK_tb,
+            RXF  => RXF_tb,
+            TXE  => TXE_tb,
+            DATA => DATA_tb, -- подключаем к шине данных
+            RD   => RD_tb,
+            WR   => WR_tb,
+            LED  => LED_tb
+        );
+
+    -- Генерация тактового сигнала
+    clk_process : process
+    begin
+        CLK_tb <= '0';
+        wait for 10 ns;
+        CLK_tb <= '1';
+        wait for 10 ns;
+    end process;
+
+    -- Управление шиной данных (DATA)
+    process(CLK_tb)
+    begin
+        if rising_edge(CLK_tb) then
+            -- Если нужно записать в шину (пишем в DATA_tb)
+            if RXF_tb = '0' then
+                DATA_tb <= DATA_out;  -- передаем данные через шину
+            else
+                DATA_tb <= (others => 'Z');  -- шина в состоянии высокого импеданса (для чтения)
+            end if;
+        end if;
+    end process;
+
+    -- Тестовые стимулы
+    stim_proc : process
+    begin
+        -- Подождем немного, чтобы система стабилизировалась
+        wait for 100 ns;
+
+        -- Симулируем появление данных в FTDI (RXF = '0')
+        RXF_tb <= '0';
+        DATA_out <= "11110000";  -- передаем данные через DATA_out
+        wait for 100 ns;
+
+        -- Убираем флаг данных (RXF = '1')
+        RXF_tb <= '1';
+        DATA_out <= (others => 'Z');  -- шина снова в состоянии высокого импеданса
+
+        -- Симулируем появление данных в FTDI (RXF = '0')
+        RXF_tb <= '0';
+        DATA_out <= "11111111";  -- передаем данные
+        wait for 100 ns;
+
+        -- Убираем флаг данных
+        RXF_tb <= '1';
+        DATA_out <= (others => 'Z');
+
+        -- Симулируем появление данных в FTDI (RXF = '0')
+        RXF_tb <= '0';
+        DATA_out <= "00001111";  -- передаем данные
+        wait for 100 ns;
+
+        -- Убираем флаг данных
+        RXF_tb <= '1';
+        DATA_out <= (others => 'Z');
+
+        -- Симулируем появление данных в FTDI (RXF = '0')
+        RXF_tb <= '0';
+        DATA_out <= "11111111";  -- передаем данные
+        wait for 100 ns;
+
+        -- Убираем флаг данных
+        RXF_tb <= '1';
+        DATA_out <= (others => 'Z');
+
+        -- Завершение симуляции
+        wait;
+    end process;
+
+end architecture;

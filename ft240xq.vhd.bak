@@ -1,0 +1,93 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity ft240xq is
+    Port (
+        CLK      : in  STD_LOGIC;
+        RXF      : in  STD_LOGIC;
+        TXE      : in  STD_LOGIC;
+        DATA_IN  : in  std_logic_vector(7 downto 0);  -- входные данные от внешней шины
+        DATA_OUT : out std_logic_vector(7 downto 0);  -- данные на внешнюю шину
+        OE       : out std_logic;                     -- управление направлением (1 = вывод)
+        RD       : out STD_LOGIC;
+        WR       : out STD_LOGIC
+    );
+end entity;
+
+architecture rtl of ft240xq is
+
+    type state_type is (IDLE, READ_SETUP, READ_HOLD, READ_DONE, WRITE_SETUP, WRITE_HOLD, WRITE_DONE);
+    signal state : state_type := IDLE;
+
+    signal rd_reg   : std_logic := '1';
+    signal wr_reg   : std_logic := '1';
+    signal out_data : std_logic_vector(7 downto 0) := (others => '0');
+    signal tx_mode  : std_logic := '0'; -- '1' = передаём
+    signal counter  : unsigned(2 downto 0) := (others => '0');
+
+begin
+
+    -- Присваивание выходов
+    DATA_OUT <= out_data;
+    OE       <= tx_mode;
+    RD       <= rd_reg;
+    WR       <= wr_reg;
+
+    process(CLK)
+    begin
+        if rising_edge(CLK) then
+            case state is
+                when IDLE =>
+                    wr_reg  <= '1';
+                    rd_reg  <= '1';
+                    tx_mode <= '0';
+                    counter <= (others => '0');
+
+                    if RXF = '0' then
+                        state <= READ_SETUP;
+                    elsif TXE = '0' then
+                        state <= WRITE_SETUP;
+                    end if;
+
+                -- ==== ЧТЕНИЕ ====
+                when READ_SETUP =>
+                    rd_reg <= '0';
+                    state  <= READ_HOLD;
+
+                when READ_HOLD =>
+                    if counter = "010" then
+                        state <= READ_DONE;
+                    else
+                        counter <= counter + 1;
+                    end if;
+
+                when READ_DONE =>
+                    rd_reg <= '1';
+                    -- Здесь можно обработать входные данные: DATA_IN
+                    state  <= IDLE;
+
+                -- ==== ЗАПИСЬ ====
+                when WRITE_SETUP =>
+                    out_data <= X"AA"; -- пример: отправка байта
+                    tx_mode  <= '1';
+                    wr_reg   <= '0';
+                    state    <= WRITE_HOLD;
+
+                when WRITE_HOLD =>
+                    if counter = "010" then
+                        state <= WRITE_DONE;
+                    else
+                        counter <= counter + 1;
+                    end if;
+
+                when WRITE_DONE =>
+                    wr_reg   <= '1';
+                    tx_mode  <= '0';
+                    state    <= IDLE;
+
+            end case;
+        end if;
+    end process;
+
+end architecture;

@@ -1,0 +1,56 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity LED_indicator is
+    Port (
+        CLK       : in  std_logic;
+        LED       : out std_logic;
+        DATA_IN   : in  std_logic_vector(7 downto 0);  -- Входные данные
+        DATA_OUT  : out std_logic_vector(7 downto 0);  -- Данные на шину
+        OE        : out std_logic;                      -- Управление направлением (1 = вывод)
+        RD        : in  std_logic                       -- Сигнал чтения
+    );
+end entity;
+
+architecture rtl of LED_indicator is
+    signal data_rx     : std_logic_vector(7 downto 0);
+    signal data_tx     : std_logic_vector(7 downto 0);
+    signal tx_mode     : std_logic := '0';  -- 1 = передаем в DATA, 0 = читаем из DATA
+    signal led_state   : std_logic := '0';
+    signal RD_prev     : std_logic := '1';
+begin
+
+    -- Управление направлением шины DATA
+    DATA_OUT <= data_tx when tx_mode = '1' else (others => 'Z');
+    OE        <= tx_mode;  -- Включаем шину только если передаем данные
+
+    process(CLK)
+    begin
+        if rising_edge(CLK) then
+            -- Обнаружение фронта сигнала RD (0 → 1)
+            if RD_prev = '0' and RD = '1' then
+                data_rx <= DATA_IN;  -- читаем данные с шины
+
+                if data_rx = "11111111" then
+                    led_state <= '1';
+                    tx_mode <= '1';
+                    
+                elsif data_rx = x"11110000" then
+                    led_state <= '0';
+                    tx_mode <= '1';
+                    
+                else
+                    tx_mode <= '0';
+                    data_tx <= (others => 'Z');
+                end if;
+            end if;
+
+            -- Обновление предыдущего значения RD
+            RD_prev <= RD;
+        end if;
+    end process;
+
+    LED <= led_state;
+
+end architecture;

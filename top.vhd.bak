@@ -1,0 +1,87 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity top is
+    Port (
+        CLK    : in  STD_LOGIC;
+        RXF    : in  STD_LOGIC;
+        TXE    : in  STD_LOGIC;
+        DATA   : inout std_logic_vector(7 downto 0);
+        RD     : out STD_LOGIC;
+        WR     : out STD_LOGIC;
+        LED    : out STD_LOGIC
+    );
+end entity;
+
+architecture rtl of top is
+
+    -- Объявления компонентов с разделением входов/выходов
+    component ft240xq is
+        Port (
+            CLK      : in  STD_LOGIC;
+            RXF      : in  STD_LOGIC;
+            TXE      : in  STD_LOGIC;
+            DATA_IN  : in  std_logic_vector(7 downto 0);
+            DATA_OUT : out std_logic_vector(7 downto 0);
+            OE       : out std_logic;
+            RD       : out STD_LOGIC;
+            WR       : out STD_LOGIC
+        );
+    end component;
+
+    component LED_indicator is
+        Port (
+            CLK      : in  std_logic;
+            LED      : out std_logic;
+            DATA_IN  : in  std_logic_vector(7 downto 0);
+            DATA_OUT : out std_logic_vector(7 downto 0);
+            OE       : out std_logic;
+            RD       : in  std_logic
+        );
+    end component;
+
+    -- Внутренние сигналы
+    signal rd_internal    : std_logic;
+    signal wr_internal    : std_logic;
+    signal data_out_ftdi  : std_logic_vector(7 downto 0);
+    signal data_out_led   : std_logic_vector(7 downto 0);
+    signal data_in        : std_logic_vector(7 downto 0);
+    signal oe_ftdi        : std_logic;
+    signal oe_led         : std_logic;
+
+begin
+
+    -- Управление общей двунаправленной шиной
+    DATA <= data_out_ftdi when oe_ftdi = '1' else
+            data_out_led  when oe_led  = '1' else
+            (others => 'Z');
+
+    data_in <= DATA;
+
+    -- Инстанцирование компонентов
+    C0: ft240xq port map (
+        CLK      => CLK,
+        RXF      => RXF,
+        TXE      => TXE,
+        DATA_IN  => data_in,
+        DATA_OUT => data_out_ftdi,
+        OE       => oe_ftdi,
+        RD       => rd_internal,
+        WR       => wr_internal
+    );
+
+    C1: LED_indicator port map (
+        CLK      => CLK,
+        LED      => LED,
+        DATA_IN  => data_in,
+        DATA_OUT => data_out_led,
+        OE       => oe_led,
+        RD       => rd_internal
+    );
+
+    -- Назначение выходов
+    RD <= rd_internal;
+    WR <= wr_internal;
+
+end architecture;
