@@ -102,11 +102,193 @@ sim:/tb/CLK
 # 
 #           File in use by: Lemon  Hostname: PROMETHEUS  ProcessID: 9412
 # 
-#           Attempting to use alternate WLF file "./wlftrc6trr".
+#           Attempting to use alternate WLF file "./wlft90s0x6".
 # ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
 # 
-#           Using alternate file: ./wlftrc6trr
+#           Using alternate file: ./wlft90s0x6
 # 
 run -all
 # ** Note: end test
 #    Time: 540 ns  Iteration: 0  Instance: /tb
+run-all
+# invalid command name "run-all"
+force -freeze sim:/tb/DATA 00000000 0
+force -drive sim:/tb/DATA 00000000 0
+force -deposit sim:/tb/DATA 00000000 0
+force -deposit sim:/tb/DATA 00000000 0
+run -all
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/DATA(7) \
+sim:/tb/DATA(6) \
+sim:/tb/DATA(5) \
+sim:/tb/DATA(4) \
+sim:/tb/DATA(3) \
+sim:/tb/DATA(2) \
+sim:/tb/DATA(1) \
+sim:/tb/DATA(0) \
+sim:/tb/CLK
+run -all
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/DATA(7) \
+sim:/tb/DATA(6) \
+sim:/tb/DATA(5) \
+sim:/tb/DATA(4) \
+sim:/tb/DATA(3) \
+sim:/tb/DATA(2) \
+sim:/tb/DATA(1) \
+sim:/tb/DATA(0) \
+sim:/tb/CLK
+noforce sim:/tb/DATA
+noforce sim:/tb/DATA
+run
+restart
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/CLK
+run -all
+# ** Note: end test
+#    Time: 540 ns  Iteration: 0  Instance: /tb
+view -new wave
+# -new not supported on PE
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/CLK
+run -all
+force -deposit sim:/tb/DATA ZZZZZZZZ 0
+run -all
+view -new wave
+# -new not supported on PE
+add wave -position insertpoint  \
+sim:/tb/LED
+view -new wave
+# -new not supported on PE
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/CLK
+run -all
+view -new wave
+# -new not supported on PE
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/CLK
+noforce sim:/tb/DATA
+noforce sim:/tb/DATA
+restart
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/CLK
+run -all
+# ** Note: end test
+#    Time: 540 ns  Iteration: 0  Instance: /tb
+restart
+view -new wave
+# -new not supported on PE
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/CLK
+run -all
+# ** Note: end test
+#    Time: 540 ns  Iteration: 0  Instance: /tb
+view -new wave
+# -new not supported on PE
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/CLK
+restart
+restart
+view -new wave
+# -new not supported on PE
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/CLK
+run -all
+# ** Note: end test
+#    Time: 540 ns  Iteration: 0  Instance: /tb
+restart
+view -new wave
+# -new not supported on PE
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/CLK
+run -all
+# ** Note: end test
+#    Time: 540 ns  Iteration: 0  Instance: /tb
+add wave -position insertpoint  \
+sim:/tb/WR \
+sim:/tb/TXE \
+sim:/tb/RX_valid \
+sim:/tb/RXF \
+sim:/tb/RD \
+sim:/tb/LED \
+sim:/tb/DATA \
+sim:/tb/CLK
+# Break key hit 
+# Break key hit 

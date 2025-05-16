@@ -12,10 +12,10 @@ entity LED_indicator is
 end entity;
 
 architecture rtl of LED_indicator is
-    signal data_out : std_logic_vector(7 downto 0) := (others => 'Z');
+    signal data_out     : std_logic_vector(7 downto 0) := (others => '0');
     signal led_state    : std_logic := '0';
 	 signal data_dir     : std_logic := '0';  -- 1 = передача, 0 = приём
-	 signal data_rx : std_logic_vector(7 downto 0);
+	 signal data_rx      : std_logic_vector(7 downto 0);
 
 begin
 

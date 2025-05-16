@@ -1,103 +1,93 @@
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all; 
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 entity tb is
-end tb;
+end entity;
 
 architecture sim of tb is
-    -- Сигналы для подключения к DUT (Design Under Test)
-    signal CLK_tb  : std_logic := '0';
-    signal RXF_tb  : std_logic := '1'; -- нет данных
-    signal TXE_tb  : std_logic := '0'; -- можно писать
-    signal DATA_tb : std_logic_vector(7 downto 0); -- буфер
-    signal RD_tb   : std_logic;
-    signal WR_tb   : std_logic;
-    signal LED_tb  : std_logic;
 
-    -- Для чтения и записи данных
-    signal DATA_in : std_logic_vector(7 downto 0) := (others => 'Z');  -- для чтения
-    signal DATA_out : std_logic_vector(7 downto 0) := (others => 'Z'); -- для записи
+    -- Компоненты тестируемого устройства
+    signal CLK     : std_logic := '0';
+    signal RXF     : std_logic := '1';
+    signal TXE     : std_logic := '0' ;
+    signal DATA    : std_logic_vector(7 downto 0) := "00000000";
+    signal RD      : std_logic;
+    signal WR      : std_logic;
+    signal LED     : std_logic;
+	 signal RX_valid : std_logic;
+	 signal data_dir     : std_logic := '0';  -- 1 = ????????, 0 = ?????
+	 signal data_out     : std_logic_vector(7 downto 0) := "00000000";
+
+
+    -- Компоненты
+    component top
+        Port (
+        CLK    : in  STD_LOGIC;
+        RXF    : in  STD_LOGIC;
+        TXE    : in  STD_LOGIC;
+        DATA   : inout std_logic_vector(7 downto 0) := "ZZZZZZZZ";
+        RD     : out STD_LOGIC;
+        WR     : out STD_LOGIC;
+        LED    : out STD_LOGIC;
+		  RX_valid : out STD_LOGIC
+        );
+    end component;
 
 begin
-    -- Инстанцирование топа
-    dut : entity work.top
-        port map (
-            CLK  => CLK_tb,
-            RXF  => RXF_tb,
-            TXE  => TXE_tb,
-            DATA => DATA_tb, -- подключаем к шине данных
-            RD   => RD_tb,
-            WR   => WR_tb,
-            LED  => LED_tb
-        );
 
-    -- Генерация тактового сигнала
-    clk_process : process
+DATA <= data_out when data_dir = '1' else (others => 'Z');
+
+    -- Тактовый сигнал 50 МГц
+    clk_gen : process
     begin
-        CLK_tb <= '0';
-        wait for 10 ns;
-        CLK_tb <= '1';
-        wait for 10 ns;
+        while true loop
+            CLK <= '0';
+            wait for 10 ns;
+            CLK <= '1';
+            wait for 10 ns;
+        end loop;
     end process;
 
-    -- Управление шиной данных (DATA)
-    process(CLK_tb)
+    -- Инстанцирование компонента
+    uut: top port map (
+        CLK		=> CLK,
+        LED		=> LED,
+        DATA	=> DATA,
+		  RXF => RXF,
+		  TXE => TXE,
+		  RD => RD,
+		  WR => WR,
+		  RX_valid => RX_valid
+    );
+
+    -- Тестовая последовательность
+    stim_proc: process
     begin
-        if rising_edge(CLK_tb) then
-            -- Если нужно записать в шину (пишем в DATA_tb)
-            if RXF_tb = '0' then
-                DATA_tb <= DATA_out;  -- передаем данные через шину
-            else
-                DATA_tb <= (others => 'Z');  -- шина в состоянии высокого импеданса (для чтения)
-            end if;
-        end if;
-    end process;
-
-    -- Тестовые стимулы
-    stim_proc : process
-    begin
-        -- Подождем немного, чтобы система стабилизировалась
+        data_dir = '1';
+        -- Ожидание старта
         wait for 100 ns;
 
-        -- Симулируем появление данных в FTDI (RXF = '0')
-        RXF_tb <= '0';
-        DATA_out <= "11110000";  -- передаем данные через DATA_out
+        -- Посылаем 00001111
+        --DATA     <= "00001111";  -- или x"0F"
+        RXF <= '0';
+		  --DATA     <= "00001111";
+        wait for 20 ns;
+        RXF <= '1';
         wait for 100 ns;
 
-        -- Убираем флаг данных (RXF = '1')
-        RXF_tb <= '1';
-        DATA_out <= (others => 'Z');  -- шина снова в состоянии высокого импеданса
-
-        -- Симулируем появление данных в FTDI (RXF = '0')
-        RXF_tb <= '0';
-        DATA_out <= "11111111";  -- передаем данные
+        -- Посылаем 11111111
+        --DATA     <= "11111111";  -- или x"FF"
+        RXF <= '0';
+		  --DATA     <= "11111111";
+        wait for 20 ns;
+        RXF <= '1';
         wait for 100 ns;
 
-        -- Убираем флаг данных
-        RXF_tb <= '1';
-        DATA_out <= (others => 'Z');
-
-        -- Симулируем появление данных в FTDI (RXF = '0')
-        RXF_tb <= '0';
-        DATA_out <= "00001111";  -- передаем данные
-        wait for 100 ns;
-
-        -- Убираем флаг данных
-        RXF_tb <= '1';
-        DATA_out <= (others => 'Z');
-
-        -- Симулируем появление данных в FTDI (RXF = '0')
-        RXF_tb <= '0';
-        DATA_out <= "11111111";  -- передаем данные
-        wait for 100 ns;
-
-        -- Убираем флаг данных
-        RXF_tb <= '1';
-        DATA_out <= (others => 'Z');
-
-        -- Завершение симуляции
+        -- Завершение
+		  wait for 200 ns;
+        assert false report "end test" severity note;
         wait;
-    end process;
+        end process;
 
 end architecture;

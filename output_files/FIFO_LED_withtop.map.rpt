@@ -1,5 +1,5 @@
 Analysis & Synthesis report for FIFO_LED_withtop
-Sat May 10 14:00:19 2025
+Sat May 10 14:26:59 2025
 Quartus II 64-Bit Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
 
 
@@ -44,7 +44,7 @@ applicable agreement for further details.
 +---------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                    ;
 +------------------------------------+--------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Sat May 10 14:00:19 2025      ;
+; Analysis & Synthesis Status        ; Successful - Sat May 10 14:26:59 2025      ;
 ; Quartus II 64-Bit Version          ; 13.1.0 Build 162 10/23/2013 SJ Web Edition ;
 ; Revision Name                      ; FIFO_LED_withtop                           ;
 ; Top-level Entity Name              ; top                                        ;
@@ -232,7 +232,9 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; LED_indicator:C1|DATA[5]~en            ; Stuck at GND due to stuck port data_in ;
 ; LED_indicator:C1|DATA[6]~en            ; Stuck at GND due to stuck port data_in ;
 ; LED_indicator:C1|DATA[7]~en            ; Stuck at GND due to stuck port data_in ;
+; LED_indicator:C1|data_dir              ; Stuck at GND due to stuck port data_in ;
 ; ft240xq:C0|reading                     ; Merged with ft240xq:C0|RX_valid        ;
+; LED_indicator:C1|DATA[0]~reg0          ; Stuck at GND due to stuck port data_in ;
 ; LED_indicator:C1|DATA[7]~reg0          ; Stuck at GND due to stuck port data_in ;
 ; LED_indicator:C1|DATA[6]~reg0          ; Stuck at GND due to stuck port data_in ;
 ; LED_indicator:C1|DATA[5]~reg0          ; Stuck at GND due to stuck port data_in ;
@@ -240,8 +242,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; LED_indicator:C1|DATA[3]~reg0          ; Stuck at GND due to stuck port data_in ;
 ; LED_indicator:C1|DATA[2]~reg0          ; Stuck at GND due to stuck port data_in ;
 ; LED_indicator:C1|DATA[1]~reg0          ; Stuck at GND due to stuck port data_in ;
-; LED_indicator:C1|DATA[0]~reg0          ; Stuck at GND due to stuck port data_in ;
-; Total Number of Removed Registers = 17 ;                                        ;
+; Total Number of Removed Registers = 18 ;                                        ;
 +----------------------------------------+----------------------------------------+
 
 
@@ -294,7 +295,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit Analysis & Synthesis
     Info: Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
-    Info: Processing started: Sat May 10 14:00:16 2025
+    Info: Processing started: Sat May 10 14:26:57 2025
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off FIFO_LED_withtop -c FIFO_LED_withtop
 Info (20030): Parallel compilation is enabled and will use 16 of the 16 processors detected
 Info (12021): Found 2 design units, including 1 entities, in source file tb.vhd
@@ -337,8 +338,8 @@ Info (21057): Implemented 31 device resources after synthesis - the final resour
     Info (21061): Implemented 16 logic cells
 Info: Quartus II 64-Bit Analysis & Synthesis was successful. 0 errors, 15 warnings
     Info: Peak virtual memory: 4700 megabytes
-    Info: Processing ended: Sat May 10 14:00:19 2025
-    Info: Elapsed time: 00:00:03
+    Info: Processing ended: Sat May 10 14:26:59 2025
+    Info: Elapsed time: 00:00:02
     Info: Total CPU time (on all processors): 00:00:02
 
 

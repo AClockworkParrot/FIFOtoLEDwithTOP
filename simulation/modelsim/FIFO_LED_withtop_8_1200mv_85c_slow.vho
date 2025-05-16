@@ -16,7 +16,7 @@
 -- PROGRAM "Quartus II 64-Bit"
 -- VERSION "Version 13.1.0 Build 162 10/23/2013 SJ Web Edition"
 
--- DATE "05/10/2025 14:00:35"
+-- DATE "05/10/2025 14:27:15"
 
 -- 
 -- Device: Altera EP3C10E144C8 Package TQFP144
@@ -38,11 +38,11 @@ ENTITY 	top IS
 	CLK : IN std_logic;
 	RXF : IN std_logic;
 	TXE : IN std_logic;
-	DATA : INOUT std_logic_vector(7 DOWNTO 0);
-	RD : OUT std_logic;
-	WR : OUT std_logic;
-	LED : OUT std_logic;
-	RX_valid : OUT std_logic
+	DATA : BUFFER std_logic_vector(7 DOWNTO 0);
+	RD : BUFFER std_logic;
+	WR : BUFFER std_logic;
+	LED : BUFFER std_logic;
+	RX_valid : BUFFER std_logic
 	);
 END top;
 
@@ -77,6 +77,7 @@ SIGNAL ww_devpor : std_logic;
 SIGNAL ww_CLK : std_logic;
 SIGNAL ww_RXF : std_logic;
 SIGNAL ww_TXE : std_logic;
+SIGNAL ww_DATA : std_logic_vector(7 DOWNTO 0);
 SIGNAL ww_RD : std_logic;
 SIGNAL ww_WR : std_logic;
 SIGNAL ww_LED : std_logic;
@@ -131,6 +132,7 @@ BEGIN
 ww_CLK <= CLK;
 ww_RXF <= RXF;
 ww_TXE <= TXE;
+DATA <= ww_DATA;
 RD <= ww_RD;
 WR <= ww_WR;
 LED <= ww_LED;
